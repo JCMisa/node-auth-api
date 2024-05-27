@@ -67,8 +67,43 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     } else {
       res.status(200).json({
-        message: "Product with id: {" + id + "} was deleted successfully",
+        message: "User with id: {" + id + "} was deleted successfully",
       });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// auth login
+async function validateCredentials(email) {
+  try {
+    // 1. Retrieve user record from database based on email
+    const user = await User.findOne({ email }); // Check for existing email equal to usser input
+
+    if (user) {
+      return true; // User not found
+    }
+  } catch (error) {
+    console.error("Error validating credentials:", error);
+    return false; // Handle errors gracefully
+  }
+}
+
+const authUser = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const isValidLogin = await validateCredentials(email);
+
+    if (isValidLogin) {
+      res.status(200).json({
+        message: "User logged in successfully",
+      });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Invalid email or password" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -81,4 +116,5 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  authUser,
 };

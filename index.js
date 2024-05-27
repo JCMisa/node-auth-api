@@ -3,6 +3,16 @@ const mongoose = require("mongoose");
 const User = require("./models/user.model.js");
 const userRoute = require("./routes/user.route.js");
 const app = express();
+const cors = require("cors");
+
+// cors manipulation
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // middleware
 app.use(express.json()); //to add record with json
